@@ -305,11 +305,3 @@ object ParseExpr extends JolieParser {
     print( "done" )
   }
 }
-
-//object ParseExpr extends JolieParser {
-//  def main( args: Array[ String ] ): Unit = {
-//    val ln = "main { c = 5; c++; c = c instanceof string }"
-//    println( "input: " + ln )
-//    println( parseAll( mainProcedure, ln ) )
-//  }
-//}
