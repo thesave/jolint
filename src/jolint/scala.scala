@@ -444,9 +444,8 @@ class JolieParser extends JavaTokenParsers {
 
 object JolieParserObject extends JolieParser {
   def main( args: Array[ String ] ): Unit = {
-    val nsrc = scala.io.Source.fromFile( args{ 0 }).mkString
-    val src = nsrc.replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","")
-    println( "This is the source " + src )
+    val src = scala.io.Source.fromFile( args{ 0 }).mkString
+      .replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","")
     val p = parseAll( program, src )
     println( "Parser's class: " + p.getClass )
     p match {
