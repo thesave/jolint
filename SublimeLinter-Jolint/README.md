@@ -1,9 +1,7 @@
-SublimeLinter-contrib-JoLint
+SublimeLinter-jolint
 ================================
 
-[![Build Status](https://travis-ci.org/SublimeLinter/SublimeLinter-contrib-JoLint.svg?branch=master)](https://travis-ci.org/SublimeLinter/SublimeLinter-contrib-JoLint)
-
-This linter plugin for [SublimeLinter][docs] provides an interface to [JoLint](__linter_homepage__). It will be used with files that have the “__syntax__” syntax.
+This linter plugin for [SublimeLinter][docs] provides an interface to [JoLint](__linter_homepage__). It will be used with files that have the “__jolie__” syntax.
 
 ## Installation
 SublimeLinter 3 must be installed in order to use this plugin.
