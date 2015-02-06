@@ -13,9 +13,9 @@ Before using this plugin, you must ensure that `jolint` is installed on your sys
 
 1. Create a launcher that points to `jolint.jar`. 
 E.g., under *nix you can create in your `~/bin` folder a launcher script like the one below
-	
-	#!/bin/bash 
-	java -jar path/to/joint.jar $1
+<pre><code>#!/bin/bash 
+java -jar path/to/joint.jar $1
+</pre></code>
 
 1. make the launcher executable
 
