@@ -1,3 +1,5 @@
+package jolieScalaParser
+
 /************************************************************************
   *	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *
   *                                                                       *
@@ -14,6 +16,9 @@
 
 
 import scala.util.parsing.combinator.JavaTokenParsers
+
+import _root_.scala.io.Source
+import _root_.scala.util.parsing.combinator.JavaTokenParsers
 
 sealed trait Program
 case class Main( pars: List[ Parallel ] ) extends Program
@@ -444,7 +449,7 @@ class JolieParser extends JavaTokenParsers {
 
 object JolieParserObject extends JolieParser {
   def main( args: Array[ String ] ): Unit = {
-    val src = scala.io.Source.fromFile( args{ 0 }).mkString
+    val src = Source.fromFile( args{ 0 }).mkString
       .replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","")
     val p = parseAll( program, src )
     println( "Parser's class: " + p.getClass )
