@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="scala-sdk-2.11.0" level="application" />
-    <orderEntry type="library" name="libjolie" level="project" />
+    <orderEntry type="library" exported="" name="scala-sdk-2.11.0" level="application" />
+    <orderEntry type="library" exported="" name="jolie" level="project" />
   </component>
 </module>

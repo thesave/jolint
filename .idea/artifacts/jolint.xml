@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="jolint">
+    <output-path>$PROJECT_DIR$/out/artifacts/jolint</output-path>
+    <root id="archive" name="jolint.jar">
+      <element id="module-output" name="jolint" />
+      <element id="library" level="project" name="jolie" />
+    </root>
+  </artifact>
+</component>

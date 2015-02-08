@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="libjolie">
+  <library name="jolie">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../jolie/trunk/libjolie/dist/libjolie.jar!/" />
       <root url="jar://$PROJECT_DIR$/../jolie/trunk/jolie/dist/jolie.jar!/" />

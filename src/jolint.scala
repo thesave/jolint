@@ -6,7 +6,6 @@ import jolie.CommandLineParser
 import jolie.lang.parse.util.{ParsingUtils, ProgramInspector}
 
 import scala.collection.JavaConversions
-import scala.collection.JavaConverters._
 
 /************************************************************************
   *	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *
