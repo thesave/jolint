@@ -13,9 +13,9 @@ Before using this plugin, you must ensure that `jolint` is installed on your sys
 
 1. Create a launcher that points to `jolint.jar`. 
 E.g., under *nix you can create in your `~/bin` folder a launcher script like the one below
-	
-	#!/bin/bash 
-	java -cp path/to/jolient.jar -l $JOLIE_HOME/lib:$JOLIE_HOME/javaServices/*:$JOLIE_HOME/extensions/* -i $JOLIE_HOME/include "$@"
+
+<pre><code>#!/bin/bash 
+java -cp path/to/jolient.jar -l $JOLIE_HOME/lib:$JOLIE_HOME/javaServices/*:$JOLIE_HOME/extensions/* -i $JOLIE_HOME/include "$@"</pre></code>
 
 1. make the launcher executable
 
