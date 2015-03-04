@@ -6,6 +6,7 @@ import jolie.CommandLineParser
 import jolie.lang.parse.util.{ParsingUtils, ProgramInspector}
 
 import scala.collection.JavaConversions
+import scala.collection.JavaConverters._
 
 /************************************************************************
   *	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *
@@ -29,6 +30,7 @@ class Jolint {
 object JolintObject extends Jolint{
 
   var outputPortList = scala.collection.mutable.Map[ String, OutputPortInfo ]()
+  var inputOperationSet = Set[ String ]()
 
   def parseProgram(
         inputStream: InputStream, source: java.net.URI, includePath: Array[ String ],
@@ -86,7 +88,38 @@ object JolintObject extends Jolint{
         }
       }
 
-      case default => println( default )
+      case node: NotificationOperationStatement => {
+        if (outputPortList.contains(node.outputPortId())) {
+          if (!hasOperation(node.id(),
+            outputPortList(node.outputPortId()).operations())) {
+            println(
+              node.context().source + ":" + node.context().line() +
+                ": error: operation " + node.id() + " not declared in port " + node.outputPortId())
+          }
+        } else {
+          println(node.context().source + ":" + node.context().line() +
+            ": error: OutputPort \"" + node.outputPortId() + "\" not declared"
+          )
+        }
+      }
+
+      case node: OneWayOperationStatement => {
+        if( !inputOperationSet.contains( node.id() )){
+          println(
+            node.context().source + ":" + node.context().line() +
+              ": error: operation " + node.id() + " not declared in any inputPort" )
+        }
+      }
+
+      case node: RequestResponseOperationStatement => {
+        if( !inputOperationSet.contains( node.id() )){
+          println(
+            node.context().source + ":" + node.context().line() +
+              ": error: operation " + node.id() + " not declared in any inputPort" )
+        }
+      }
+
+      case default => return
     }
   }
 
@@ -108,6 +141,12 @@ object JolintObject extends Jolint{
 
     inspector.getOutputPorts().foreach( outputPort =>
       outputPortList += ( outputPort.id -> outputPort )
+    )
+
+    inspector.getInputPorts().foreach( inputPort =>
+      JavaConversions.collectionAsScalaIterable( inputPort.operations() ).foreach( operation =>
+      inputOperationSet += operation.id()
+      )
     )
 
     unfoldProgram( program, inspector )
