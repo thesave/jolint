@@ -30,7 +30,7 @@ class Jolint {
 object JolintObject extends Jolint{
 
   var outputPortList = scala.collection.mutable.Map[ String, OutputPortInfo ]()
-  var inputOperationSet = Set[ String ]()
+  var inputOperationList = List[ OperationDeclaration ]()
 
   def parseProgram(
         inputStream: InputStream, source: java.net.URI, includePath: Array[ String ],
@@ -40,11 +40,30 @@ object JolintObject extends Jolint{
     new OLParseTreeOptimizer(olParser.parse()).optimize()
   }
 
-  def hasOperation( operation: String,
-                    opDeclarations: java.util.Collection[ OperationDeclaration] ): Boolean = {
+  def hasInputOperation[ T <: OperationDeclaration ]( operation: String,
+                   opDeclarations: List[ OperationDeclaration ],
+                   operationClass: Class[ T ] ): Boolean = {
+    opDeclarations.foreach(
+      opDecl =>
+      {
+        if( opDecl.id().equals( operation ) && opDecl.getClass.equals( operationClass ) ){
+          return true
+        }
+      }
+    )
+    false
+  }
+
+
+  def hasOutputOperation[ T <: OperationDeclaration ]( operation: String,
+                    opDeclarations: java.util.Collection[ OperationDeclaration ],
+                    operationClass: Class[ T ] ): Boolean = {
     JavaConversions.collectionAsScalaIterable( opDeclarations ).foreach(
-      opDecl => if( opDecl.id().equals( operation ) ){
-        return true
+      opDecl =>
+      {
+        if( opDecl.id().equals( operation ) && opDecl.getClass.equals( operationClass ) ){
+         return true
+        }
       }
     )
     false
@@ -75,11 +94,12 @@ object JolintObject extends Jolint{
 
       case node: SolicitResponseOperationStatement => {
         if( outputPortList.contains( node.outputPortId() ) ){
-          if( !hasOperation( node.id(),
-            outputPortList( node.outputPortId() ).operations() ) ) {
+          if( !hasOutputOperation( node.id(),
+            outputPortList( node.outputPortId() ).operations(),
+            classOf[ RequestResponseOperationDeclaration ] ) ) {
             println(
               node.context().source + ":" + node.context().line() +
-                ": error: operation " + node.id() + " not declared in port " + node.outputPortId())
+                ": error: RequestResponse operation \"" + node.id() + "\" not declared in port " + node.outputPortId())
           }
         } else {
           println( node.context().source + ":" + node.context().line() +
@@ -90,11 +110,11 @@ object JolintObject extends Jolint{
 
       case node: NotificationOperationStatement => {
         if (outputPortList.contains(node.outputPortId())) {
-          if (!hasOperation(node.id(),
-            outputPortList(node.outputPortId()).operations())) {
+          if (!hasOutputOperation(node.id(),
+            outputPortList(node.outputPortId()).operations(), classOf[ OneWayOperationDeclaration ] ) ) {
             println(
               node.context().source + ":" + node.context().line() +
-                ": error: operation " + node.id() + " not declared in port " + node.outputPortId())
+                ": error: OneWay operation \"" + node.id() + "\" not declared in outputPort " + node.outputPortId())
           }
         } else {
           println(node.context().source + ":" + node.context().line() +
@@ -104,18 +124,18 @@ object JolintObject extends Jolint{
       }
 
       case node: OneWayOperationStatement => {
-        if( !inputOperationSet.contains( node.id() )){
+        if( !hasInputOperation( node.id(), inputOperationList, classOf[ OneWayOperationDeclaration ] ) ){
           println(
             node.context().source + ":" + node.context().line() +
-              ": error: operation " + node.id() + " not declared in any inputPort" )
+              ": error: OneWay operation " + node.id() + " not declared in any inputPort" )
         }
       }
 
       case node: RequestResponseOperationStatement => {
-        if( !inputOperationSet.contains( node.id() )){
+        if( !hasInputOperation( node.id(), inputOperationList, classOf[ RequestResponseOperationDeclaration ] ) ){
           println(
             node.context().source + ":" + node.context().line() +
-              ": error: operation " + node.id() + " not declared in any inputPort" )
+              ": error: RequestResponse operation " + node.id() + " not declared in any inputPort" )
         }
       }
 
@@ -145,7 +165,7 @@ object JolintObject extends Jolint{
 
     inspector.getInputPorts().foreach( inputPort =>
       JavaConversions.collectionAsScalaIterable( inputPort.operations() ).foreach( operation =>
-      inputOperationSet += operation.id()
+      inputOperationList = inputOperationList.::( operation )
       )
     )
 
