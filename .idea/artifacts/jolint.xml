@@ -3,6 +3,11 @@
     <output-path>$PROJECT_DIR$/out/artifacts/jolint</output-path>
     <root id="archive" name="jolint.jar">
       <element id="module-output" name="jolint" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../jolie/trunk/libjolie/dist/libjolie.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../jolie/trunk/jolie/dist/jolie.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/opt/scala/lib/scala-library.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/opt/scala/lib/scala-parser-combinators_2.11-1.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/opt/scala/lib/scala-reflect.jar" path-in-jar="/" />
       <element id="library" level="project" name="jolie" />
     </root>
   </artifact>

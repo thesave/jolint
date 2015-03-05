@@ -5,6 +5,7 @@ import jolie.lang.parse.ast._
 import jolie.CommandLineParser
 import jolie.lang.parse.util.{ParsingUtils, ProgramInspector}
 
+import scala.collection
 import scala.collection.JavaConversions
 import scala.collection.JavaConverters._
 
@@ -22,69 +23,45 @@ import scala.collection.JavaConverters._
   * GNU General Public License for more details.                          *
   *************************************************************************/
 
-class Jolint {
+object JolintObject{
 
-}
-
-
-object JolintObject extends Jolint{
-
-  var outputPortList = scala.collection.mutable.Map[ String, OutputPortInfo ]()
+  var outputPortList = Map[ String, OutputPortInfo ]()
   var inputOperationList = List[ OperationDeclaration ]()
 
   def parseProgram(
-        inputStream: InputStream, source: java.net.URI, includePath: Array[ String ],
-        classLoader: ClassLoader, definedCostants: Map[ String, Token ]
-  ): Program = {
+                    inputStream: InputStream, source: java.net.URI, includePath: Array[ String ],
+                    classLoader: ClassLoader, definedCostants: Map[ String, Token ]
+                    ): Program = {
     val olParser = new OLParser(new Scanner(inputStream, source), includePath, classLoader)
     new OLParseTreeOptimizer(olParser.parse()).optimize()
   }
 
-  def hasInputOperation[ T <: OperationDeclaration ]( operation: String,
-                   opDeclarations: List[ OperationDeclaration ],
-                   operationClass: Class[ T ] ): Boolean = {
-    opDeclarations.foreach(
-      opDecl =>
-      {
-        if( opDecl.id().equals( operation ) && opDecl.getClass.equals( operationClass ) ){
-          return true
-        }
-      }
-    )
-    false
-  }
-
-
-  def hasOutputOperation[ T <: OperationDeclaration ]( operation: String,
-                    opDeclarations: java.util.Collection[ OperationDeclaration ],
-                    operationClass: Class[ T ] ): Boolean = {
-    JavaConversions.collectionAsScalaIterable( opDeclarations ).foreach(
-      opDecl =>
-      {
-        if( opDecl.id().equals( operation ) && opDecl.getClass.equals( operationClass ) ){
-         return true
-        }
-      }
-    )
-    false
+  def hasOperation[ T <: OperationDeclaration ](
+                                                 operation: String,
+                                                 opDeclarations: List[ OperationDeclaration ],
+                                                 operationClass: Class[ T ] ): Boolean = {
+    opDeclarations.find( op => op.id().equals( operation ) ) match {
+      case Some( op ) => op.getClass.equals( operationClass )
+      case None => false
+    }
   }
 
   def toScalaList( list: java.util.List[ OLSyntaxNode ] ) =
-      JavaConversions.asScalaBuffer( list )
+    JavaConversions.asScalaBuffer( list )
 
   def unfoldProgram( oLSyntaxNode: OLSyntaxNode,
                      i: ProgramInspector ): Unit = {
     oLSyntaxNode match {
       case node: Program =>
         toScalaList( node.children() )
-        .filter( _.isInstanceOf[ DefinitionNode ] )
-        .foreach( child => unfoldProgram( child,i ) )
+          .filter( _.isInstanceOf[ DefinitionNode ] )
+          .foreach( child => unfoldProgram( child,i ) )
 
       case node: DefinitionNode => unfoldProgram( node.body(), i )
 
       case node: ParallelStatement => {
         toScalaList( node.children() ).
-        foreach( subnode => unfoldProgram( subnode, i ) )
+          foreach( subnode => unfoldProgram( subnode, i ) )
       }
 
       case node: SequenceStatement => {
@@ -94,8 +71,8 @@ object JolintObject extends Jolint{
 
       case node: SolicitResponseOperationStatement => {
         if( outputPortList.contains( node.outputPortId() ) ){
-          if( !hasOutputOperation( node.id(),
-            outputPortList( node.outputPortId() ).operations(),
+          if( !hasOperation( node.id(),
+            JavaConversions.collectionAsScalaIterable( outputPortList( node.outputPortId() ).operations() ).toList,
             classOf[ RequestResponseOperationDeclaration ] ) ) {
             println(
               node.context().source + ":" + node.context().line() +
@@ -109,9 +86,11 @@ object JolintObject extends Jolint{
       }
 
       case node: NotificationOperationStatement => {
-        if (outputPortList.contains(node.outputPortId())) {
-          if (!hasOutputOperation(node.id(),
-            outputPortList(node.outputPortId()).operations(), classOf[ OneWayOperationDeclaration ] ) ) {
+        if ( outputPortList.contains( node.outputPortId() ) ) {
+          if ( !hasOperation(
+            node.id(),
+            JavaConversions.collectionAsScalaIterable( outputPortList(node.outputPortId() ).operations() ).toList,
+            classOf[ OneWayOperationDeclaration ] ) ) {
             println(
               node.context().source + ":" + node.context().line() +
                 ": error: OneWay operation \"" + node.id() + "\" not declared in outputPort " + node.outputPortId())
@@ -124,7 +103,10 @@ object JolintObject extends Jolint{
       }
 
       case node: OneWayOperationStatement => {
-        if( !hasInputOperation( node.id(), inputOperationList, classOf[ OneWayOperationDeclaration ] ) ){
+        if( !hasOperation(
+          node.id(),
+          inputOperationList,
+          classOf[ OneWayOperationDeclaration ] ) ){
           println(
             node.context().source + ":" + node.context().line() +
               ": error: OneWay operation " + node.id() + " not declared in any inputPort" )
@@ -132,14 +114,15 @@ object JolintObject extends Jolint{
       }
 
       case node: RequestResponseOperationStatement => {
-        if( !hasInputOperation( node.id(), inputOperationList, classOf[ RequestResponseOperationDeclaration ] ) ){
+        if( !hasOperation(
+          node.id(),
+          inputOperationList,
+          classOf[ RequestResponseOperationDeclaration ] ) ){
           println(
             node.context().source + ":" + node.context().line() +
               ": error: RequestResponse operation " + node.id() + " not declared in any inputPort" )
         }
       }
-
-      case default => return
     }
   }
 
@@ -150,9 +133,9 @@ object JolintObject extends Jolint{
     // init olParser
     val olParser = new OLParser(
       new Scanner( cp.programStream(),
-      java.net.URI.create( "file:" + cp.programFilepath() ) ),
+        java.net.URI.create( "file:" + cp.programFilepath() ) ),
       cp.includePaths(),
-    cp.jolieClassLoader()
+      cp.jolieClassLoader()
     )
 
     // parse and optimize tree of program
@@ -160,13 +143,11 @@ object JolintObject extends Jolint{
     val inspector = ParsingUtils.createInspector( program )
 
     inspector.getOutputPorts().foreach( outputPort =>
-      outputPortList += ( outputPort.id -> outputPort )
+      outputPortList = outputPortList + ( ( outputPort.id(), outputPort ) )
     )
 
     inspector.getInputPorts().foreach( inputPort =>
-      JavaConversions.collectionAsScalaIterable( inputPort.operations() ).foreach( operation =>
-      inputOperationList = inputOperationList.::( operation )
-      )
+      inputOperationList = JavaConversions.collectionAsScalaIterable( inputPort.operations() ).toList
     )
 
     unfoldProgram( program, inspector )
