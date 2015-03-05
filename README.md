@@ -7,10 +7,11 @@ A linter for the [Jolie](http://jolie-lang.org) language.
 Path `out/artifacts` contains the last build in a jar executable file
 To ease execution, create a bash launcher, e.g., `jolie_launcher.sh`: 
 
-    #!/bin/bash
-    JOLIE_HOME="usr/lib/jolie" # or the path where jolie is installed
-    java -jar ~path/to/jolint.jar -l $JOLIE_HOME/lib:$JOLIE_HOME/javaServices/*:$JOLIE_HOME/extensions/* -i $JOLIE_HOME/include $1
-  
+```bash
+#!/bin/bash
+java -jar ~path/to/jolint.jar -l $JOLIE_HOME/lib:$JOLIE_HOME/javaServices/*:$JOLIE_HOME/extensions/* -i $JOLIE_HOME/include $1
+```
+
 under `bin` folder in your home folder. Remembed to make the launcher executable with `chmod +x jolint_launcher.sh`
 
 ## Usage
