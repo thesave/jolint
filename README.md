@@ -1,7 +1,7 @@
 # jolint
 
 A linter for the [Jolie](http://jolie-lang.org) language.
-[image demo](!https://cloud.githubusercontent.com/assets/905938/6501587/784b0f00-c31a-11e4-8109-102363ffaca7.png)
+![demo image](https://cloud.githubusercontent.com/assets/905938/6501587/784b0f00-c31a-11e4-8109-102363ffaca7.png)
 ## Installation
 
 Path `out/artifacts` contains the last build in a jar executable file
