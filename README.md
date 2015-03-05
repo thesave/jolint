@@ -2,7 +2,7 @@
 
 A linter for the [Jolie](http://jolie-lang.org) language.
 
-<img style="width:50%" src="https://cloud.githubusercontent.com/assets/905938/6501587/784b0f00-c31a-11e4-8109-102363ffaca7.png" alt="demo image">
+<img style="max-width:50%;" src="https://cloud.githubusercontent.com/assets/905938/6501587/784b0f00-c31a-11e4-8109-102363ffaca7.png" alt="demo image">
 
 ## Installation
 
