@@ -6,8 +6,9 @@ A linter for the [Jolie](http://jolie-lang.org) language.
 
 ## Installation
 
-Path `out/artifacts` contains the last build in a jar executable file
-To ease execution, create a bash launcher, e.g., `jolie_launcher.sh`: 
+Path `out/artifacts` contains the last build in a executable jar file.
+
+To quicken the launch of `jolint` you can create a bash launcher, e.g., `jolie_launcher.sh`: 
 
 ```bash
 #!/bin/bash
