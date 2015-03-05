@@ -9,6 +9,7 @@ To ease execution, create a bash launcher, e.g., `jolie_launcher.sh`:
 
 ```bash
 #!/bin/bash
+JOLIE_HOME="/usr/lib/jolie" # or the path to your jolie installation folder
 java -jar ~path/to/jolint.jar -l $JOLIE_HOME/lib:$JOLIE_HOME/javaServices/*:$JOLIE_HOME/extensions/* -i $JOLIE_HOME/include $1
 ```
 
