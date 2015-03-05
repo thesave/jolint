@@ -15,6 +15,10 @@ Before installing the jolint plugin, you need to [install](http://www.sublimelin
 
 Then, you can install the SublimeLinter plugin by copying/cloning it in your SublimeText packages folder.
 You can access the packages directory from the main menu *Preferences* -> *Browse Packages*.
-Once in the Packages folder you can clone the repository with 
+Once in the Packages folder you can clone/checkout the repository with 
 
     svn co https://github.com/thesave/jolint/trunk/SublimeLinter-jolint
+
+After that the plugin shall be installed correctly.
+
+Just open a Jolie source file and start linting :)
