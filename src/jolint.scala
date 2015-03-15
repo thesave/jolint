@@ -1,13 +1,9 @@
-import java.io.InputStream
-import jolie.lang.parse.Scanner.Token
+import jolie.CommandLineParser
 import jolie.lang.parse._
 import jolie.lang.parse.ast._
-import jolie.CommandLineParser
 import jolie.lang.parse.util.{ParsingUtils, ProgramInspector}
 
-import scala.collection
 import scala.collection.JavaConversions
-import scala.collection.JavaConverters._
 
 /************************************************************************
   *	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *
@@ -23,18 +19,10 @@ import scala.collection.JavaConverters._
   * GNU General Public License for more details.                          *
   *************************************************************************/
 
-object JolintObject{
+object jolint{
 
   var outputPortList = Map[ String, OutputPortInfo ]()
   var inputOperationList = List[ OperationDeclaration ]()
-
-  def parseProgram(
-                    inputStream: InputStream, source: java.net.URI, includePath: Array[ String ],
-                    classLoader: ClassLoader, definedCostants: Map[ String, Token ]
-                    ): Program = {
-    val olParser = new OLParser(new Scanner(inputStream, source), includePath, classLoader)
-    new OLParseTreeOptimizer(olParser.parse()).optimize()
-  }
 
   def hasOperation[ T <: OperationDeclaration ](
                                                  operation: String,
@@ -133,7 +121,9 @@ object JolintObject{
     // init olParser
     val olParser = new OLParser(
       new Scanner( cp.programStream(),
-        java.net.URI.create( "file:" + cp.programFilepath() ) ),
+        java.net.URI.create( "file:" + cp.programFilepath() ),
+        null
+      ),
       cp.includePaths(),
       cp.jolieClassLoader()
     )
@@ -152,7 +142,7 @@ object JolintObject{
 
     unfoldProgram( program, inspector )
 
-    //val sv = new SemanticVerifier( program )
+    new SemanticVerifier( program ).validate()
 
   }
 }

@@ -98,7 +98,7 @@ class JolieParser extends JavaTokenParsers {
   def include: Parser[ Any ] = "include" ~ stringLiteral
 
   def constants: Parser[ Any ] =
-    "contants" ~ LC ~ repsep( constantAssignment, "COMMA" ) ~ RC
+    "contants" ~ LC ~ repsep( constantAssignment, COMMA ) ~ RC
 
   def constantAssignment: Parser[ Any ] =
     ident ~ ASSIGN ~ ( wholeNumber | floatingPointNumber | stringLiteral | ident )
