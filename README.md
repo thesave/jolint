@@ -3,6 +3,7 @@
 A linter for the [Jolie](http://jolie-lang.org) language.
 
 <img width=50%" src="https://cloud.githubusercontent.com/assets/905938/6501587/784b0f00-c31a-11e4-8109-102363ffaca7.png" alt="demo image">
+Jolint running within Sublime Text with [SublimeLinter-jolint](https://github.com/thesave/SublimeLinter-jolint)
 
 ## Installation
 
