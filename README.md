@@ -24,5 +24,4 @@ From shell `jolint yourJolieFile.(i)ol`
 
 ### SublimeLinter-jolint plugin
 
-Folder `SublimeLinter-jolint` contains a plugin for SublimeLinter to integrate jolint with sublime text.
-The folder also contains detailed instructions for installation.
+Repository [SublimeLinter-jolint](https://github.com/thesave/SublimeLinter-jolint) contains a plugin and the detailed instructions to integrate jolint in Sublime Text.
