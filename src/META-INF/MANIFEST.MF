@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: jolint
+Main-Class: trunk.jolint
 
