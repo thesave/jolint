@@ -1,25 +1,26 @@
 package trunk
 
 import jolie.CommandLineParser
+import jolie.lang.parse.SemanticVerifier.Configuration
 import jolie.lang.parse._
 import jolie.lang.parse.ast._
 import jolie.lang.parse.util.{ParsingUtils, ProgramInspector}
 
 import scala.collection.JavaConversions
 
-/**************************************************************************
-  *	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *
-  *                                                                       *
-  * This program is free software: you can redistribute it and/or modify  *
-  * it under the terms of the GNU General Public License as published by  *
-  * the Free Software Foundation, either version 3 of the License, or     *
-  * (at your option) any later version.                                   *
-  *                                                                       *
-  * This program is distributed in the hope that it will be useful,       *
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
-  * GNU General Public License for more details.                          *
-  *************************************************************************/
+/*************************************************************************
+*	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *
+*                                                                       *
+* This program is free software: you can redistribute it and/or modify  *
+* it under the terms of the GNU General Public License as published by  *
+* the Free Software Foundation, either version 3 of the License, or     *
+* (at your option) any later version.                                   *
+*                                                                       *
+* This program is distributed in the hope that it will be useful,       *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
+* GNU General Public License for more details.                          *
+*************************************************************************/
 
 object jolint{
 
@@ -113,6 +114,8 @@ object jolint{
               ": error: RequestResponse operation " + node.id() + " not declared in any inputPort" )
         }
       }
+
+      case default =>
     }
   }
 
@@ -144,7 +147,9 @@ object jolint{
 
     unfoldProgram( program, inspector )
 
-    new SemanticVerifier( program ).validate()
+    val configuration = new Configuration()
+    configuration.setCheckForMain( false )
+    new SemanticVerifier( program, configuration ).validate()
 
   }
 }
