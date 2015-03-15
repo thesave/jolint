@@ -24,100 +24,109 @@ import scala.collection.JavaConversions
 
 object jolint{
 
-  var outputPortList = Map[ String, OutputPortInfo ]()
-  var inputOperationList = List[ OperationDeclaration ]()
+  val configuration = new Configuration()
+  configuration.setCheckForMain( false )
 
-  def hasOperation[ T <: OperationDeclaration ](
-                                                 operation: String,
-                                                 opDeclarations: List[ OperationDeclaration ],
-                                                 operationClass: Class[ T ] ): Boolean = {
-    opDeclarations.find( op => op.id().equals( operation ) ) match {
-      case Some( op ) => op.getClass.equals( operationClass )
-      case None => false
-    }
-  }
+//  val semanticVerifier = None:Option[ SemanticVerifier ]
 
-  def toScalaList( list: java.util.List[ OLSyntaxNode ] ) =
-    JavaConversions.asScalaBuffer( list )
+//  var outputPortList = Map[ String, OutputPortInfo ]()
+//  var inputOperationList = List[ OperationDeclaration ]()
 
-  def unfoldProgram( oLSyntaxNode: OLSyntaxNode,
-                     i: ProgramInspector ): Unit = {
-    oLSyntaxNode match {
-      case node: Program =>
-        toScalaList( node.children() )
-          .filter( _.isInstanceOf[ DefinitionNode ] )
-          .foreach( child => unfoldProgram( child,i ) )
+//  def hasOperation[ T <: OperationDeclaration ](
+//                                                 operation: String,
+//                                                 opDeclarations: List[ OperationDeclaration ],
+//                                                 operationClass: Class[ T ] ): Boolean = {
+//    opDeclarations.find( op => op.id().equals( operation ) ) match {
+//      case Some( op ) => op.getClass.equals( operationClass )
+//      case None => false
+//    }
+//  }
 
-      case node: DefinitionNode => unfoldProgram( node.body(), i )
+//  def toScalaList( list: java.util.List[ OLSyntaxNode ] ) =
+//    JavaConversions.asScalaBuffer( list )
+//
+//  def validateSemantics( node: OLSyntaxNode ) = {
+//    semanticVerifier.get.visit( node )
+//  }
 
-      case node: ParallelStatement => {
-        toScalaList( node.children() ).
-          foreach( subnode => unfoldProgram( subnode, i ) )
-      }
-
-      case node: SequenceStatement => {
-        toScalaList( node.children() ).
-          foreach( subnode => unfoldProgram( subnode, i ) )
-      }
-
-      case node: SolicitResponseOperationStatement => {
-        if( outputPortList.contains( node.outputPortId() ) ){
-          if( !hasOperation( node.id(),
-            JavaConversions.collectionAsScalaIterable( outputPortList( node.outputPortId() ).operations() ).toList,
-            classOf[ RequestResponseOperationDeclaration ] ) ) {
-            println(
-              node.context().source + ":" + node.context().line() +
-                ": error: RequestResponse operation \"" + node.id() + "\" not declared in port " + node.outputPortId())
-          }
-        } else {
-          println( node.context().source + ":" + node.context().line() +
-            ": error: OutputPort \"" + node.outputPortId() + "\" not declared"
-          )
-        }
-      }
-
-      case node: NotificationOperationStatement => {
-        if ( outputPortList.contains( node.outputPortId() ) ) {
-          if ( !hasOperation(
-            node.id(),
-            JavaConversions.collectionAsScalaIterable( outputPortList(node.outputPortId() ).operations() ).toList,
-            classOf[ OneWayOperationDeclaration ] ) ) {
-            println(
-              node.context().source + ":" + node.context().line() +
-                ": error: OneWay operation \"" + node.id() + "\" not declared in outputPort " + node.outputPortId())
-          }
-        } else {
-          println(node.context().source + ":" + node.context().line() +
-            ": error: OutputPort \"" + node.outputPortId() + "\" not declared"
-          )
-        }
-      }
-
-      case node: OneWayOperationStatement => {
-        if( !hasOperation(
-          node.id(),
-          inputOperationList,
-          classOf[ OneWayOperationDeclaration ] ) ){
-          println(
-            node.context().source + ":" + node.context().line() +
-              ": error: OneWay operation " + node.id() + " not declared in any inputPort" )
-        }
-      }
-
-      case node: RequestResponseOperationStatement => {
-        if( !hasOperation(
-          node.id(),
-          inputOperationList,
-          classOf[ RequestResponseOperationDeclaration ] ) ){
-          println(
-            node.context().source + ":" + node.context().line() +
-              ": error: RequestResponse operation " + node.id() + " not declared in any inputPort" )
-        }
-      }
-
-      case default =>
-    }
-  }
+//  def unfoldProgram( oLSyntaxNode: OLSyntaxNode,
+//                     i: ProgramInspector ): Unit = {
+//    oLSyntaxNode match {
+//      case node: Program =>
+//        toScalaList( node.children() )
+//          .filter( _.isInstanceOf[ DefinitionNode ] )
+//          .foreach( child => unfoldProgram( child,i ) )
+//
+//      case node: DefinitionNode => unfoldProgram( node.body(), i )
+//
+//      case node: ParallelStatement => {
+//        toScalaList( node.children() ).
+//          foreach( subnode => unfoldProgram( subnode, i ) )
+//      }
+//
+//      case node: SequenceStatement => {
+//        toScalaList( node.children() ).
+//          foreach( subnode => unfoldProgram( subnode, i ) )
+//      }
+//
+//      case node: SolicitResponseOperationStatement => {
+//        if( outputPortList.contains( node.outputPortId() ) ){
+//          if( !hasOperation( node.id(),
+//            JavaConversions.collectionAsScalaIterable( outputPortList( node.outputPortId() ).operations() ).toList,
+//            classOf[ RequestResponseOperationDeclaration ] ) ) {
+//            println(
+//              node.context().source + ":" + node.context().line() +
+//                ": error: RequestResponse operation \"" + node.id() + "\" not declared in port " + node.outputPortId())
+//          }
+//        } else {
+//          println( node.context().source + ":" + node.context().line() +
+//            ": error: OutputPort \"" + node.outputPortId() + "\" not declared"
+//          )
+//        }
+//      }
+//
+//      case node: NotificationOperationStatement => {
+//        if ( outputPortList.contains( node.outputPortId() ) ) {
+//          if ( !hasOperation(
+//            node.id(),
+//            JavaConversions.collectionAsScalaIterable( outputPortList(node.outputPortId() ).operations() ).toList,
+//            classOf[ OneWayOperationDeclaration ] ) ) {
+//            println(
+//              node.context().source + ":" + node.context().line() +
+//                ": error: OneWay operation \"" + node.id() + "\" not declared in outputPort " + node.outputPortId())
+//          }
+//        } else {
+//          println(node.context().source + ":" + node.context().line() +
+//            ": error: OutputPort \"" + node.outputPortId() + "\" not declared"
+//          )
+//        }
+//      }
+//
+//      case node: OneWayOperationStatement => {
+//        if( !hasOperation(
+//          node.id(),
+//          inputOperationList,
+//          classOf[ OneWayOperationDeclaration ] ) ){
+//          println(
+//            node.context().source + ":" + node.context().line() +
+//              ": error: OneWay operation " + node.id() + " not declared in any inputPort" )
+//        }
+//      }
+//
+//      case node: RequestResponseOperationStatement => {
+//        if( !hasOperation(
+//          node.id(),
+//          inputOperationList,
+//          classOf[ RequestResponseOperationDeclaration ] ) ){
+//          println(
+//            node.context().source + ":" + node.context().line() +
+//              ": error: RequestResponse operation " + node.id() + " not declared in any inputPort" )
+//        }
+//      }
+//
+//      case default =>
+//    }
+//  }
 
   def main( args: Array[ String ] ): Unit = {
     // read commandline
@@ -135,21 +144,26 @@ object jolint{
 
     // parse and optimize tree of program
     val program = new OLParseTreeOptimizer( olParser.parse() ).optimize()
-    val inspector = ParsingUtils.createInspector( program )
+//    val inspector = ParsingUtils.createInspector( program )
 
-    inspector.getOutputPorts().foreach( outputPort =>
-      outputPortList = outputPortList + ( ( outputPort.id(), outputPort ) )
-    )
+//    inspector.getOutputPorts().foreach( outputPort =>
+//      outputPortList = outputPortList + ( ( outputPort.id(), outputPort ) )
+//    )
+//
+//    inspector.getInputPorts().foreach( inputPort =>
+//      inputOperationList = JavaConversions.collectionAsScalaIterable( inputPort.operations() ).toList
+//    )
 
-    inspector.getInputPorts().foreach( inputPort =>
-      inputOperationList = JavaConversions.collectionAsScalaIterable( inputPort.operations() ).toList
-    )
-
-    unfoldProgram( program, inspector )
+//    unfoldProgram( program, inspector )
 
     val configuration = new Configuration()
     configuration.setCheckForMain( false )
-    new SemanticVerifier( program, configuration ).validate()
+//    try {
+      new SemanticVerifier( program, configuration ).validate()
+//    } catch {
+//      case error: SemanticException => print( program.context().source() + ":" + program.context().line()+1 +
+//        ": error: [generic] file semantically invalid" )
+//    }
 
   }
 }
