@@ -1,4 +1,4 @@
-package jolieScalaParser
+package experimental.jolieScalaParser
 
 /************************************************************************
   *	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *

@@ -1,3 +1,5 @@
+package trunk
+
 import jolie.CommandLineParser
 import jolie.lang.parse._
 import jolie.lang.parse.ast._
@@ -5,7 +7,7 @@ import jolie.lang.parse.util.{ParsingUtils, ProgramInspector}
 
 import scala.collection.JavaConversions
 
-/************************************************************************
+/**************************************************************************
   *	Copyright (C) 2015 Saverio Giallorenzo saverio.giallorenzo@gmail.com  *
   *                                                                       *
   * This program is free software: you can redistribute it and/or modify  *
