@@ -20,7 +20,7 @@ JOLIE_HOME="/usr/lib/jolie" # or the path to your jolie installation folder
 java -jar ~path/to/jolint.jar -l $JOLIE_HOME/lib:$JOLIE_HOME/javaServices/*:$JOLIE_HOME/extensions/* -i $JOLIE_HOME/include $1
 ```
 
-under `bin` in your home folder. Remembed to make the launcher executable with `chmod +x jolint_launcher.sh`
+under `bin` in your home folder. Remembed to make the launcher executable with `chmod +x jolint.sh`
 
 ### Windows
 
